@@ -129,6 +129,8 @@ string if you want to disable timestamps."
   (org-journal-dir-check-or-create)
   (find-file (concat org-journal-dir
                      (format-time-string org-journal-file-format)))
+  
+  (org-decrypt-entries)
   (goto-char (point-max))
   (let ((unsaved (buffer-modified-p)))
     (if (equal (point-max) 1)
@@ -191,6 +193,8 @@ If the date is not today, it won't be given a time."
           (if view-mode
               (view-file filename)
             (find-file filename))
+          (let ((buffer-read-only nil))
+            (org-decrypt-entries))
           (org-show-subtree))
       (message "No next journal entry after this one"))))
 
@@ -215,6 +219,8 @@ If the date is not today, it won't be given a time."
           (if view-mode
               (view-file filename)
             (find-file filename))
+          (let ((buffer-read-only nil))
+            (org-decrypt-entries))
           (org-show-subtree))
       (message "No previous journal entry after this one"))))
 
@@ -253,6 +259,8 @@ If the date is not today, it won't be given a time."
       (progn
         (view-file-other-window (concat org-journal-dir org-journal-file))
         (setq-local org-hide-emphasis-markers t)
+        (let ((buffer-read-only nil))
+          (org-decrypt-entries))
         (org-show-subtree))
     (message "No journal entry for this date.")))
 
